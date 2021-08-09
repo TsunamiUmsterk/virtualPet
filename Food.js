@@ -1,32 +1,26 @@
 class Food { constructor () {
-     var options; {
-
-     }
-     
-
+     this.image = loadImage("Milk.png");
 }
 
-foodStock= this.foodStock;
 
-milkBottle = loadImage("Images/milkImage.png");
 
      display() {
           var x=80, y=100;
 
-          imageMODE(CENTER);
-          if(this.foodStock !== 0) {
-               for(var i=0, i< this.foodStock; i++) {
-                    if(i%10 == 0) {
+          imageMode(CENTER);
+          image(this.image, 720, 220, 70, 70);
+          console.log(foodS);
+
+          if(foodS !== 0) {
+               for(var i=0; i< foodS; i++) {
+                    if(i%15 == 0) {  
+                         y = y + 60;
                          x = 80;
-                         y = y + 50;
                     }
-                    image(this.image, x, y, 50, 50);
+                    image(this.image, x, y, 70, 70);
+                    x = x + 40;
                }
           }
-     }
-
-     addedFood() {
-          
      }
 
      

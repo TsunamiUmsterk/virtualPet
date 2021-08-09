@@ -3,15 +3,21 @@ var feedButton, addButton;
 var foodObj;
 var database;
 var foodStock;
+var foodS = 0;
+
 
 
 function preload(){
-  sadDog=loadImage("Images/Dog.png");
-  happyDog=loadImage("Images/happy dog.png");
+  sadDog=loadImage("Dog.png");
+  happyDog=loadImage("happy dog.png");
 }
 
 function setup() {
-  createCanvas(1000,400);
+  createCanvas(1000,1000);
+
+  database = firebase.database();
+
+  getFoodStock();
   
   dog=createSprite(800,200,150,150);
   dog.addImage(sadDog);
@@ -19,31 +25,33 @@ function setup() {
 
   feedButton = createButton("Feed the dog");
   feedButton.position(700, 95);
-  feedButton.mousePressed(deductFood);
+  feedButton.mousePressed(feedDog);
 
   foodButton = createButton("Add Food");
   foodButton.position(630, 95);
   foodButton.mousePressed(addFoods);
 
-  foodS = new Food(x, y, 30, 30);
+  foodObj = new Food();
 
 }
 
 function draw() {
   background(46,139,87);
   drawSprites();
+
+  foodObj.display();
 }
 
 //function to read food Stock
 function getFoodStock() {
   var foodRef = database.ref("stocks/food");
   foodRef.on("value", function(data){
-       foodCount = data.val();
+       foodS = data.val();
   })
 }
 //function to update food stock 
 function updateFoodStock(value) {
-  database.ref('/').update(
+  database.ref('stocks').update(
       {
           food : value
       } 
@@ -52,7 +60,7 @@ function updateFoodStock(value) {
 //function to add food in stock
 function addFoods() {
   foodS++;
-  database.ref('/').update({
+  database.ref('stocks').update({
     food : foodS
   })
 }
@@ -60,10 +68,10 @@ function addFoods() {
 function feedDog() {
   dog.addImage(happyDog);
 
-  if(foodObj.getFoodStock()<=0) {
-    foodObj.updateFoodStock(foodObj.getFoodStock()*0);
+  if(foodS >=0) {
+    updateFoodStock(foodS-1);
   } else{
-    foodObj.updateFoodStock(foodObj.getFoodStock()-1)
+    updateFoodStock(0);
   }
 }
 
@@ -71,6 +79,6 @@ function feedDog() {
 function deductFood() {
   var foodRef = database.ref("stocks/food");
   foodRef.set({
-       food : this.food
+       food : foodObj.food
   })
 }
